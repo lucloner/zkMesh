@@ -17,13 +17,58 @@
         "pattern": "\\QMETA-INF/services/java.nio.channels.spi.SelectorProvider\\E"
       },
       {
+        "pattern": "\\QMETA-INF/services/java.time.zone.ZoneRulesProvider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/java.util.spi.ResourceBundleControlProvider\\E"
+      },
+      {
         "pattern": "\\QMETA-INF/services/javax.security.auth.spi.LoginModule\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/org.eclipse.jetty.http.HttpFieldPreEncoder\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/org.eclipse.jetty.security.Authenticator$Factory\\E"
+      },
+      {
+        "pattern": "\\Qjavax/servlet/LocalStrings.properties\\E"
+      },
+      {
+        "pattern": "\\Qjavax/servlet/LocalStrings_en.properties\\E"
+      },
+      {
+        "pattern": "\\Qjavax/servlet/LocalStrings_en_US.properties\\E"
+      },
+      {
+        "pattern": "\\Qjavax/servlet/http/LocalStrings.properties\\E"
+      },
+      {
+        "pattern": "\\Qjavax/servlet/http/LocalStrings_en.properties\\E"
+      },
+      {
+        "pattern": "\\Qjavax/servlet/http/LocalStrings_en_US.properties\\E"
+      },
+      {
+        "pattern": "\\Qjetty-logging-linux.properties\\E"
+      },
+      {
+        "pattern": "\\Qjetty-logging.properties\\E"
       },
       {
         "pattern": "\\Qlogback-test.xml\\E"
       },
       {
         "pattern": "\\Qlogback.xml\\E"
+      },
+      {
+        "pattern": "\\Qorg/eclipse/jetty/http/encoding.properties\\E"
+      },
+      {
+        "pattern": "\\Qorg/eclipse/jetty/http/mime.properties\\E"
+      },
+      {
+        "pattern": "\\Qorg/eclipse/jetty/version/build.properties\\E"
       },
       {
         "pattern": "\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
@@ -40,6 +85,18 @@
     ]
   },
   "bundles": [
+    {
+      "name": "javax.servlet.LocalStrings",
+      "locales": [
+        "en-US"
+      ]
+    },
+    {
+      "name": "javax.servlet.http.LocalStrings",
+      "locales": [
+        "en-US"
+      ]
+    },
     {
       "name": "sun.security.util.Resources",
       "locales": [

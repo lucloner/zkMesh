@@ -1,9 +1,8 @@
 package net.vicp.biggee.bundle;
 
-import org.apache.zookeeper.server.ServerConfig;
-import org.apache.zookeeper.server.ZooKeeperServerMain;
 import org.apache.zookeeper.server.admin.AdminServer;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
+import org.apache.zookeeper.server.quorum.QuorumPeerMain;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +12,7 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
  * Hello world!
  *
  */
-public class App extends ZooKeeperServerMain {
+public class App extends QuorumPeerMain {
     public static void main(String[] args) {
         Properties properties;
         try {
@@ -34,8 +34,9 @@ public class App extends ZooKeeperServerMain {
         List<Integer> meshList = countMesh(properties);
         String dataDir = properties.getProperty("dataDir");
         int clientPort = Integer.parseInt(properties.getProperty("clientPort"));
-        boolean adminServerEnable = Boolean.parseBoolean(properties.getProperty("admin.enableServer"));
+        boolean adminServerEnable = Boolean.parseBoolean(String.valueOf(properties.getOrDefault("admin.enableServer", "false")));
         int serverPort = Integer.parseInt(properties.getProperty("admin.serverPort"));
+        String metricServer = properties.getProperty("metricsProvider.className");
 
         int count = meshList.size();
         if (count < 2) {
@@ -44,27 +45,40 @@ public class App extends ZooKeeperServerMain {
         }
 
         App[] apps = new App[count];
+        AtomicInteger startedCount = new AtomicInteger();
         IntStream.rangeClosed(1, count)
                 .parallel()
                 .forEach(i -> {
-                    int index = meshList.get(i - 1);
-                    boolean thisAdminServerEnable = false;
+                    boolean admin = false;
+                    String metricsProvider = null;
                     if (i == 1) {
-                        thisAdminServerEnable = adminServerEnable;
+                        int time = 0;
+                        while (time++ == 0 || startedCount.get() < apps.length - 1) {
+                            try {
+                                //noinspection BusyWait
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ignored) {
+                            }
+                        }
+                        admin = adminServerEnable;
+                        metricsProvider = metricServer;
                     }
+                    int index = meshList.get(i - 1);
+                    startedCount.incrementAndGet();
                     apps[i - 1] = startZK(args,
                             properties,
                             index,
                             dataDir + index,
                             clientPort + i - 1,
-                            thisAdminServerEnable,
-                            serverPort + i - 1);
+                            admin,
+                            serverPort + i - 1,
+                            metricsProvider);
                 });
 
         System.out.println("apps exited " + Arrays.toString(apps));
     }
 
-    public static App startZK(String[] args, Properties properties, int index, String dataDir, int clientPort, boolean adminServer, int serverPort) {
+    public static App startZK(String[] args, Properties properties, int index, String dataDir, int clientPort, boolean adminServer, int serverPort, String metricServer) {
         App app = new App();
         Properties cloned = (Properties) properties.clone();
         cloned.setProperty("dataDir", dataDir);
@@ -72,6 +86,10 @@ public class App extends ZooKeeperServerMain {
         cloned.setProperty("clientPort", String.valueOf(clientPort));
         cloned.setProperty("admin.enableServer", String.valueOf(adminServer));
         cloned.setProperty("admin.serverPort", String.valueOf(serverPort));
+        if (metricServer == null) {
+            cloned.remove("metricsProvider.className");
+
+        }
 
         try {
             createMyId(dataDir, index);
@@ -137,25 +155,16 @@ public class App extends ZooKeeperServerMain {
         Files.writeString(myId.toPath(), String.valueOf(id));
     }
 
-    public static ServerConfig parseConfig(String[] args, Properties properties) throws QuorumPeerConfig.ConfigException, IOException {
+    public static QuorumPeerConfig parseConfig(String[] args, Properties properties) throws QuorumPeerConfig.ConfigException, IOException {
         QuorumPeerConfig quorumConfiguration = new QuorumPeerConfig();
-        quorumConfiguration.parseProperties(properties);
-        ServerConfig configuration = new ServerConfig();
-        if (args.length == 1) {
-            configuration.parse(args[0]);
-        } else if (args.length > 1) {
-            String[] param = args;
-            if (args.length > 4) {
-                param = Arrays.copyOf(args, 4);
-            }
-            configuration.parse(param);
+        if (args.length > 1) {
+            quorumConfiguration.parse(args[0]);
         }
-        configuration.readFrom(quorumConfiguration);
-        return configuration;
+        quorumConfiguration.parseProperties(properties);
+        return quorumConfiguration;
     }
 
-    @Override
-    public void runFromConfig(ServerConfig config) throws IOException, AdminServer.AdminServerException {
+    public void runFromConfig(QuorumPeerConfig config) throws IOException, AdminServer.AdminServerException {
         super.runFromConfig(config);
     }
 }

@@ -4,6 +4,9 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * Unit test for simple App.
  */
@@ -34,5 +37,12 @@ public class AppTest
     public void testApp()
     {
         assertTrue( true );
+    }
+
+    public void testLookback() throws UnknownHostException {
+        assertTrue(InetAddress.getByName("127.0.0.1").isLoopbackAddress());
+        assertTrue(InetAddress.getByName("localhost").isLoopbackAddress());
+        assertFalse(InetAddress.getByName("192.168.4.251").isLoopbackAddress());
+        assertTrue(InetAddress.getByName("127.0.0.2").isLoopbackAddress());
     }
 }

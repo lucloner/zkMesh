@@ -1,2 +1,13 @@
 # Project exclude paths
 /target/
+/.idea/.gitignore
+/.idea/compiler.xml
+/.idea/jarRepositories.xml
+/.idea/misc.xml
+/.idea/vcs.xml
+/tmp/zookeeper1/version-2/snapshot.0
+/tmp/zookeeper1/myid
+/tmp/zookeeper2/version-2/snapshot.0
+/tmp/zookeeper2/myid
+/tmp/zookeeper3/version-2/snapshot.0
+/tmp/zookeeper3/myid

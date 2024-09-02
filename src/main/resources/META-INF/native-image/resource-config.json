@@ -11,7 +11,13 @@
         "pattern": "\\QMETA-INF/services/java.net.spi.InetAddressResolverProvider\\E"
       },
       {
+        "pattern": "\\QMETA-INF/services/java.net.spi.URLStreamHandlerProvider\\E"
+      },
+      {
         "pattern": "\\QMETA-INF/services/java.nio.channels.spi.SelectorProvider\\E"
+      },
+      {
+        "pattern": "\\QMETA-INF/services/javax.security.auth.spi.LoginModule\\E"
       },
       {
         "pattern": "\\Qlogback-test.xml\\E"
@@ -23,11 +29,23 @@
         "pattern": "\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
       },
       {
+        "pattern": "java.base:\\Qsun/security/util/Resources_en.properties\\E"
+      },
+      {
+        "pattern": "java.base:\\Qsun/security/util/Resources_en_US.properties\\E"
+      },
+      {
         "pattern": "jdk.jfr:\\Qjdk/jfr/internal/query/view.ini\\E"
       }
     ]
   },
   "bundles": [
+    {
+      "name": "sun.security.util.Resources",
+      "locales": [
+        "en-US"
+      ]
+    },
     {
       "name": "sun.text.resources.cldr.FormatData",
       "locales": [

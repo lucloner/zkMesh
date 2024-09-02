@@ -29,6 +29,8 @@ public class App extends ZooKeeperServerMain {
             throw new RuntimeException(e);
         }
 
+        loadJaas();
+
         List<Integer> meshList = countMesh(properties);
         String dataDir = properties.getProperty("dataDir");
         int clientPort = Integer.parseInt(properties.getProperty("clientPort"));
@@ -47,17 +49,22 @@ public class App extends ZooKeeperServerMain {
                 .forEach(i -> {
                     int index = meshList.get(i - 1);
                     boolean thisAdminServerEnable = false;
-                    int port = clientPort + i - 1;
                     if (i == 1) {
                         thisAdminServerEnable = adminServerEnable;
                     }
-                    apps[i - 1] = startZK(properties, index, dataDir + i, port, thisAdminServerEnable, serverPort + i - 1);
+                    apps[i - 1] = startZK(args,
+                            properties,
+                            index,
+                            dataDir + index,
+                            clientPort + i - 1,
+                            thisAdminServerEnable,
+                            serverPort + i - 1);
                 });
 
         System.out.println("apps exited " + Arrays.toString(apps));
     }
 
-    public static App startZK(Properties properties, int index, String dataDir, int clientPort, boolean adminServer, int serverPort) {
+    public static App startZK(String[] args, Properties properties, int index, String dataDir, int clientPort, boolean adminServer, int serverPort) {
         App app = new App();
         Properties cloned = (Properties) properties.clone();
         cloned.setProperty("dataDir", dataDir);
@@ -68,11 +75,19 @@ public class App extends ZooKeeperServerMain {
 
         try {
             createMyId(dataDir, index);
-            app.runFromConfig(parseConfig(cloned));
+            app.runFromConfig(parseConfig(args, cloned));
         } catch (IOException | AdminServer.AdminServerException | QuorumPeerConfig.ConfigException e) {
             throw new RuntimeException(e);
         }
         return app;
+    }
+
+    public static void loadJaas() {
+        File file = new File("conf", "jaas.conf");
+        if (!file.isFile()) {
+            return;
+        }
+        System.setProperty("java.security.auth.login.config", file.getAbsolutePath());
     }
 
     public static List<Integer> countMesh(Properties properties) {
@@ -110,22 +125,31 @@ public class App extends ZooKeeperServerMain {
         return properties;
     }
 
-    public static void createMyId(String dataDir,int id) throws IOException {
+    public static void createMyId(String dataDir, int id) throws IOException {
         File base = new File(dataDir);
         //noinspection ResultOfMethodCallIgnored
         base.mkdirs();
-        File myId=new File(base,"myid");
-        if(myId.isFile()){
+        File myId = new File(base, "myid");
+        if (myId.isFile()) {
             //noinspection ResultOfMethodCallIgnored
             myId.delete();
         }
-        Files.writeString(myId.toPath(),String.valueOf(id));
+        Files.writeString(myId.toPath(), String.valueOf(id));
     }
 
-    public static ServerConfig parseConfig(Properties properties) throws QuorumPeerConfig.ConfigException, IOException {
+    public static ServerConfig parseConfig(String[] args, Properties properties) throws QuorumPeerConfig.ConfigException, IOException {
         QuorumPeerConfig quorumConfiguration = new QuorumPeerConfig();
         quorumConfiguration.parseProperties(properties);
         ServerConfig configuration = new ServerConfig();
+        if (args.length == 1) {
+            configuration.parse(args[0]);
+        } else if (args.length > 1) {
+            String[] param = args;
+            if (args.length > 4) {
+                param = Arrays.copyOf(args, 4);
+            }
+            configuration.parse(param);
+        }
         configuration.readFrom(quorumConfiguration);
         return configuration;
     }

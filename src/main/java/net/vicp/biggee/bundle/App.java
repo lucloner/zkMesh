@@ -13,7 +13,6 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -34,36 +33,38 @@ public class App extends ZooKeeperServerMain {
         String dataDir = properties.getProperty("dataDir");
         int clientPort = Integer.parseInt(properties.getProperty("clientPort"));
         boolean adminServerEnable = Boolean.parseBoolean(properties.getProperty("admin.enableServer"));
+        int serverPort = Integer.parseInt(properties.getProperty("admin.serverPort"));
 
         int count = meshList.size();
         if (count < 2) {
             count = 1;
+            meshList.add(1);
         }
 
         App[] apps = new App[count];
-        AtomicBoolean leader = new AtomicBoolean(true);
         IntStream.rangeClosed(1, count)
                 .parallel()
                 .forEach(i -> {
                     int index = meshList.get(i - 1);
                     boolean thisAdminServerEnable = false;
                     int port = clientPort + i - 1;
-                    if (leader.compareAndSet(true, false)) {
+                    if (i == 1) {
                         thisAdminServerEnable = adminServerEnable;
-                        System.out.println("server " + index + " is leader ahead mesh!");
                     }
-                    apps[i - 1] = startZK(properties, index, dataDir + i, port, thisAdminServerEnable);
+                    apps[i - 1] = startZK(properties, index, dataDir + i, port, thisAdminServerEnable, serverPort + i - 1);
                 });
 
         System.out.println("apps exited " + Arrays.toString(apps));
     }
 
-    public static App startZK(Properties properties, int index, String dataDir, int clientPort, boolean adminServer) {
+    public static App startZK(Properties properties, int index, String dataDir, int clientPort, boolean adminServer, int serverPort) {
         App app = new App();
         Properties cloned = (Properties) properties.clone();
         cloned.setProperty("dataDir", dataDir);
+        cloned.setProperty("log.dir", dataDir);
         cloned.setProperty("clientPort", String.valueOf(clientPort));
         cloned.setProperty("admin.enableServer", String.valueOf(adminServer));
+        cloned.setProperty("admin.serverPort", String.valueOf(serverPort));
 
         try {
             createMyId(dataDir, index);

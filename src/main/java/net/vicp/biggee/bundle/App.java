@@ -3,17 +3,19 @@ package net.vicp.biggee.bundle;
 import org.apache.zookeeper.server.ServerConfig;
 import org.apache.zookeeper.server.ZooKeeperServerMain;
 import org.apache.zookeeper.server.admin.AdminServer;
-import org.apache.zookeeper.server.embedded.ZooKeeperServerEmbedded;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
-import org.apache.zookeeper.server.quorum.QuorumPeerMain;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Hello world!
@@ -21,60 +23,90 @@ import java.util.concurrent.Executors;
  */
 public class App extends ZooKeeperServerMain {
     public static void main(String[] args) {
-        Properties properties = new Properties();
+        Properties properties;
         try {
-            properties.load(Files.newBufferedReader(new File("conf/zoo.cfg").toPath()));
+            properties = loadProperties();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        List<Integer> meshList = countMesh(properties);
         String dataDir = properties.getProperty("dataDir");
         int clientPort = Integer.parseInt(properties.getProperty("clientPort"));
-//        boolean adminServer = Boolean.parseBoolean(properties.getProperty("admin.enableServer"));
-        int adminServerPort = Integer.parseInt(properties.getProperty("admin.serverPort"));
+        boolean adminServerEnable = Boolean.parseBoolean(properties.getProperty("admin.enableServer"));
 
-        App app1 = new App();
-        //noinspection resource
-        Executors.newWorkStealingPool().execute(()->{
-            try {
-                createMyId(dataDir,1);
-                app1.runFromConfig(parseConfig(properties));
-            } catch (IOException | AdminServer.AdminServerException | QuorumPeerConfig.ConfigException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        int count = meshList.size();
+        if (count < 2) {
+            count = 1;
+        }
 
-        App app2 = new App();
-        Properties properties2 = (Properties)properties.clone();
-        String dataDir2 = dataDir+2;
-        properties2.setProperty("dataDir",dataDir2);
-        properties2.setProperty("clientPort", String.valueOf(clientPort+1));
-        properties2.setProperty("admin.enableServer", "false");
-        properties2.setProperty("admin.serverPort", String.valueOf(adminServerPort+1));
+        App[] apps = new App[count];
+        AtomicBoolean leader = new AtomicBoolean(true);
+        IntStream.rangeClosed(1, count)
+                .parallel()
+                .forEach(i -> {
+                    int index = meshList.get(i - 1);
+                    boolean thisAdminServerEnable = false;
+                    int port = clientPort + i - 1;
+                    if (leader.compareAndSet(true, false)) {
+                        thisAdminServerEnable = adminServerEnable;
+                        System.out.println("server " + index + " is leader ahead mesh!");
+                    }
+                    apps[i - 1] = startZK(properties, index, dataDir + i, port, thisAdminServerEnable);
+                });
 
-        Executors.newWorkStealingPool().execute(()->{
-            try {
-                createMyId(dataDir2,2);
-                app2.runFromConfig(parseConfig(properties2));
-            } catch (IOException | AdminServer.AdminServerException | QuorumPeerConfig.ConfigException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        System.out.println("apps exited " + Arrays.toString(apps));
+    }
 
-        App app3 = new App();
-        Properties properties3 = (Properties)properties.clone();
-        String dataDir3 = dataDir+3;
-        properties3.setProperty("dataDir",dataDir3);
-        properties3.setProperty("clientPort", String.valueOf(clientPort+2));
-        properties3.setProperty("admin.enableServer", "false");
-        properties3.setProperty("admin.serverPort", String.valueOf(adminServerPort+1));
+    public static App startZK(Properties properties, int index, String dataDir, int clientPort, boolean adminServer) {
+        App app = new App();
+        Properties cloned = (Properties) properties.clone();
+        cloned.setProperty("dataDir", dataDir);
+        cloned.setProperty("clientPort", String.valueOf(clientPort));
+        cloned.setProperty("admin.enableServer", String.valueOf(adminServer));
 
         try {
-            createMyId(dataDir3,3);
-            app3.runFromConfig(parseConfig(properties3));
+            createMyId(dataDir, index);
+            app.runFromConfig(parseConfig(cloned));
         } catch (IOException | AdminServer.AdminServerException | QuorumPeerConfig.ConfigException e) {
             throw new RuntimeException(e);
         }
+        return app;
+    }
+
+    public static List<Integer> countMesh(Properties properties) {
+        List<Integer> list = properties.keySet().stream()
+                .map(String::valueOf)
+                .filter(k -> k.startsWith("server."))
+                .map(k -> k.substring(7))
+                .map(k -> {
+                    try {
+                        return Integer.parseInt(k);
+                    } catch (NumberFormatException ignored) {
+                    }
+                    return -1;
+                })
+                .filter(i -> i > 0)
+                .collect(Collectors.toList());
+
+        return list.stream()
+                .filter(i -> {
+                    String property = properties.getProperty("server." + i);
+                    String host = property.split(":")[0];
+                    try {
+                        return InetAddress.getByName(host).isLoopbackAddress();
+                    } catch (UnknownHostException ignored) {
+                        return false;
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+
+    public static Properties loadProperties() throws IOException {
+        Properties properties = new Properties();
+        properties.load(Files.newBufferedReader(new File("conf/zoo.cfg").toPath()));
+        return properties;
     }
 
     public static void createMyId(String dataDir,int id) throws IOException {

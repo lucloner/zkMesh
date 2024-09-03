@@ -157,7 +157,7 @@ public class App extends QuorumPeerMain {
     }
 
     public static QuorumPeerConfig parseConfig(String[] args, Properties properties) throws QuorumPeerConfig.ConfigException, IOException {
-        System.setProperty(QuorumPeer.CONFIG_KEY_MULTI_ADDRESS_ENABLED, properties.getProperty("multiAddress.enabled"));
+        System.setProperty(QuorumPeer.CONFIG_KEY_MULTI_ADDRESS_ENABLED, String.valueOf(properties.getOrDefault("multiAddress.enabled", "false")));
         QuorumPeerConfig quorumConfiguration = new QuorumPeerConfig();
         if (args.length > 1) {
             quorumConfiguration.parse(args[0]);

@@ -1,6 +1,7 @@
 package net.vicp.biggee.bundle;
 
 import org.apache.zookeeper.server.admin.AdminServer;
+import org.apache.zookeeper.server.quorum.QuorumPeer;
 import org.apache.zookeeper.server.quorum.QuorumPeerConfig;
 import org.apache.zookeeper.server.quorum.QuorumPeerMain;
 
@@ -156,6 +157,7 @@ public class App extends QuorumPeerMain {
     }
 
     public static QuorumPeerConfig parseConfig(String[] args, Properties properties) throws QuorumPeerConfig.ConfigException, IOException {
+        System.setProperty(QuorumPeer.CONFIG_KEY_MULTI_ADDRESS_ENABLED, properties.getProperty("multiAddress.enabled"));
         QuorumPeerConfig quorumConfiguration = new QuorumPeerConfig();
         if (args.length > 1) {
             quorumConfiguration.parse(args[0]);

@@ -36,15 +36,6 @@
     "name": "[Z"
   },
   {
-    "name": "com.fasterxml.jackson.databind.ext.Java7SupportImpl",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
     "name": "com.sun.crypto.provider.AESCipher$General",
     "methods": [
       {
@@ -157,29 +148,13 @@
     "queryAllPublicConstructors": true
   },
   {
-    "name": "double",
-    "queryAllDeclaredMethods": true
-  },
-  {
     "name": "java.io.FilePermission"
-  },
-  {
-    "name": "java.io.Serializable",
-    "queryAllDeclaredMethods": true
   },
   {
     "name": "java.lang.Boolean",
     "fields": [
       {
         "name": "TYPE"
-      }
-    ],
-    "methods": [
-      {
-        "name": "valueOf",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
       }
     ]
   },
@@ -188,14 +163,6 @@
     "fields": [
       {
         "name": "TYPE"
-      }
-    ],
-    "methods": [
-      {
-        "name": "valueOf",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
       }
     ]
   },
@@ -208,23 +175,6 @@
     ]
   },
   {
-    "name": "java.lang.Class",
-    "methods": [
-      {
-        "name": "getModule",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "java.lang.Cloneable",
-    "queryAllDeclaredMethods": true
-  },
-  {
-    "name": "java.lang.Comparable",
-    "queryAllDeclaredMethods": true
-  },
-  {
     "name": "java.lang.Deprecated",
     "queryAllPublicMethods": true
   },
@@ -234,14 +184,6 @@
       {
         "name": "TYPE"
       }
-    ],
-    "methods": [
-      {
-        "name": "valueOf",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      }
     ]
   },
   {
@@ -249,14 +191,6 @@
     "fields": [
       {
         "name": "TYPE"
-      }
-    ],
-    "methods": [
-      {
-        "name": "valueOf",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
       }
     ]
   },
@@ -266,14 +200,6 @@
       {
         "name": "TYPE"
       }
-    ],
-    "methods": [
-      {
-        "name": "valueOf",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      }
     ]
   },
   {
@@ -281,36 +207,6 @@
     "fields": [
       {
         "name": "TYPE"
-      }
-    ],
-    "methods": [
-      {
-        "name": "valueOf",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "java.lang.Module",
-    "methods": [
-      {
-        "name": "getLayer",
-        "parameterTypes": []
-      },
-      {
-        "name": "getName",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "java.lang.ModuleLayer",
-    "methods": [
-      {
-        "name": "configuration",
-        "parameterTypes": []
       }
     ]
   },
@@ -322,14 +218,6 @@
     "fields": [
       {
         "name": "TYPE"
-      }
-    ],
-    "methods": [
-      {
-        "name": "valueOf",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
       }
     ]
   },
@@ -470,53 +358,13 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "java.lang.module.Configuration",
-    "methods": [
-      {
-        "name": "findModule",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "java.lang.module.ModuleReference",
-    "methods": [
-      {
-        "name": "location",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "java.lang.module.ResolvedModule",
-    "methods": [
-      {
-        "name": "reference",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
     "name": "java.math.BigDecimal"
   },
   {
     "name": "java.math.BigInteger"
   },
   {
-    "name": "java.net.InetSocketAddress",
-    "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true
-  },
-  {
     "name": "java.net.NetPermission"
-  },
-  {
-    "name": "java.net.SocketAddress",
-    "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true
   },
   {
     "name": "java.net.SocketPermission"
@@ -546,10 +394,7 @@
     "name": "java.security.SecurityPermission"
   },
   {
-    "name": "java.util.Date",
-    "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true
+    "name": "java.util.Date"
   },
   {
     "name": "java.util.PropertyPermission",
@@ -776,102 +621,7 @@
     ]
   },
   {
-    "name": "org.apache.zookeeper.server.ServerStats",
-    "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true,
-    "methods": [
-      {
-        "name": "getAuthFailedCount",
-        "parameterTypes": []
-      },
-      {
-        "name": "getAvgLatency",
-        "parameterTypes": []
-      },
-      {
-        "name": "getClientResponseStats",
-        "parameterTypes": []
-      },
-      {
-        "name": "getDataDirSize",
-        "parameterTypes": []
-      },
-      {
-        "name": "getFsyncThresholdExceedCount",
-        "parameterTypes": []
-      },
-      {
-        "name": "getLastProcessedZxid",
-        "parameterTypes": []
-      },
-      {
-        "name": "getLogDirSize",
-        "parameterTypes": []
-      },
-      {
-        "name": "getMaxLatency",
-        "parameterTypes": []
-      },
-      {
-        "name": "getMinLatency",
-        "parameterTypes": []
-      },
-      {
-        "name": "getNonMTLSLocalConnCount",
-        "parameterTypes": []
-      },
-      {
-        "name": "getNonMTLSRemoteConnCount",
-        "parameterTypes": []
-      },
-      {
-        "name": "getNumAliveClientConnections",
-        "parameterTypes": []
-      },
-      {
-        "name": "getOutstandingRequests",
-        "parameterTypes": []
-      },
-      {
-        "name": "getPacketsReceived",
-        "parameterTypes": []
-      },
-      {
-        "name": "getPacketsSent",
-        "parameterTypes": []
-      },
-      {
-        "name": "getServerState",
-        "parameterTypes": []
-      },
-      {
-        "name": "getUptime",
-        "parameterTypes": []
-      },
-      {
-        "name": "isProviderNull",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "org.apache.zookeeper.server.admin.Commands$VotingViewCommand$QuorumServerView",
-    "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true
-  },
-  {
     "name": "org.apache.zookeeper.server.admin.JettyAdminServer",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "org.apache.zookeeper.server.auth.DigestAuthenticationProvider",
     "methods": [
       {
         "name": "<init>",
@@ -889,21 +639,10 @@
     ]
   },
   {
-    "name": "org.apache.zookeeper.server.quorum.BufferStats",
-    "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true,
+    "name": "org.apache.zookeeper.server.auth.SASLAuthenticationProvider",
     "methods": [
       {
-        "name": "getLastBufferSize",
-        "parameterTypes": []
-      },
-      {
-        "name": "getMaxBufferSize",
-        "parameterTypes": []
-      },
-      {
-        "name": "getMinBufferSize",
+        "name": "<init>",
         "parameterTypes": []
       }
     ]
@@ -949,54 +688,6 @@
     "queryAllPublicMethods": true
   },
   {
-    "name": "org.apache.zookeeper.server.quorum.MultipleAddresses",
-    "allDeclaredFields": true,
-    "queryAllDeclaredMethods": true,
-    "queryAllDeclaredConstructors": true,
-    "methods": [
-      {
-        "name": "getAllAddresses",
-        "parameterTypes": []
-      },
-      {
-        "name": "getAllHostStrings",
-        "parameterTypes": []
-      },
-      {
-        "name": "getAllPorts",
-        "parameterTypes": []
-      },
-      {
-        "name": "getAllReachableAddresses",
-        "parameterTypes": []
-      },
-      {
-        "name": "getAllReachableAddressesOrAll",
-        "parameterTypes": []
-      },
-      {
-        "name": "getOne",
-        "parameterTypes": []
-      },
-      {
-        "name": "getReachableAddress",
-        "parameterTypes": []
-      },
-      {
-        "name": "getReachableOrOne",
-        "parameterTypes": []
-      },
-      {
-        "name": "getWildcardAddresses",
-        "parameterTypes": []
-      },
-      {
-        "name": "isEmpty",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
     "name": "org.apache.zookeeper.server.quorum.QuorumBean",
     "queryAllPublicConstructors": true
   },
@@ -1023,24 +714,6 @@
   },
   {
     "name": "org.eclipse.jetty.http.Http1FieldPreEncoder"
-  },
-  {
-    "name": "org.eclipse.jetty.servlet.ServletHandler$Default404Servlet",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "org.eclipse.jetty.util.ModuleLocation",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
   },
   {
     "name": "org.eclipse.jetty.util.log.Slf4jLog",
@@ -1084,14 +757,6 @@
     "queryAllPublicConstructors": true
   },
   {
-    "name": "sun.security.krb5.PrincipalName",
-    "fields": [
-      {
-        "name": "nameStrings"
-      }
-    ]
-  },
-  {
     "name": "sun.security.pkcs12.PKCS12KeyStore",
     "methods": [
       {
@@ -1129,15 +794,6 @@
   },
   {
     "name": "sun.security.provider.DSA$SHA256withDSA",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "sun.security.provider.MD5",
     "methods": [
       {
         "name": "<init>",

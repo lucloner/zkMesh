@@ -362,13 +362,17 @@
                                 <phase>package</phase>
                                 <configuration>
                                     <buildArgs>
-                                        <arg>-march=x86-64-v2</arg>
                                         <arg>--no-fallback</arg>
                                         <arg>-Djava.util.logging.ConsoleHandler.level=FINE</arg>
                                         <arg>--report-unsupported-elements-at-runtime</arg>
                                         <arg>--verbose</arg>
                                         <arg>-H:TraceClassInitialization=ALL</arg>
                                         <arg>-H:DeadlockWatchdogInterval=0</arg>
+                                        <arg>--pgo-instrument</arg>
+                                        <arg>--color=always</arg>
+                                        <arg>--enable-all-security-services</arg>
+                                        <arg>--enable-http</arg>
+                                        <arg>--enable-https</arg>
                                     </buildArgs>
                                 </configuration>
                             </execution>
